@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagnóstico Financeiro</title>
+
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-TM4S7X3B');</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg1:#0c1f2b; --bg2:#0a2a33; --card:#ffffff; --ink:#10242e; --soft:#5a6b73;
+    --line:#e7ecee; --accent:#11b886; --accent-d:#0a8c66; --gold:#f4b740; --gold-d:#d99a1f;
+    --red:#e0533d; --shadow:0 10px 40px rgba(0,0,0,.18);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{min-height:100%}
+  body{
+    font-family:'DM Sans',-apple-system,system-ui,sans-serif;color:var(--ink);
+    background:radial-gradient(120% 80% at 50% 0%, var(--bg2) 0%, var(--bg1) 60%, #07161e 100%);
+    min-height:100dvh;display:flex;justify-content:center;background-attachment:fixed;
+  }
+  .app{width:100%;max-width:460px;display:flex;flex-direction:column;position:relative}
+  .progress{height:5px;background:rgba(255,255,255,.12);position:sticky;top:0;z-index:20}
+  .progress .bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--gold));transition:width .45s cubic-bezier(.4,0,.2,1)}
+  .brand{display:flex;align-items:center;gap:8px;padding:14px 22px 4px;color:#cfe7e0;font-family:'Sora',sans-serif;font-weight:700;font-size:13px;letter-spacing:.02em}
+  .brand .d{width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent)}
+  .stagewrap{flex:1;display:flex;flex-direction:column;justify-content:flex-start;padding:24px 18px 48px}
+  .screen{display:none;animation:fade .4s ease}
+  .screen.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+  .eyebrow{color:var(--gold);font-family:'Sora',sans-serif;font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;text-align:center;margin-bottom:12px}
+  h1.q{font-family:'Sora',sans-serif;font-weight:800;font-size:25px;line-height:1.18;color:#fff;text-align:center;margin-bottom:8px;letter-spacing:-.01em}
+  .sub{color:#9fb8b3;text-align:center;font-size:15px;margin-bottom:22px}
+  .opts{display:flex;flex-direction:column;gap:11px}
+  .opt{background:var(--card);border:2px solid transparent;border-radius:15px;padding:17px 18px;font-size:16.5px;font-weight:500;color:var(--ink);cursor:pointer;display:flex;align-items:center;gap:13px;transition:transform .12s,border-color .15s,box-shadow .15s;box-shadow:0 4px 14px rgba(0,0,0,.10);text-align:left;width:100%}
+  .opt:active{transform:scale(.985)}
+  .opt:hover{border-color:var(--accent)}
+  .opt .ic{width:30px;height:30px;border-radius:9px;background:rgba(17,184,134,.12);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+  .opt.sel{border-color:var(--accent);box-shadow:0 6px 22px rgba(17,184,134,.30)}
+  .heroline{color:#cfe7e0;text-align:center;font-size:14px;margin:-2px auto 18px;max-width:340px;line-height:1.4}
+
+  .field{width:100%;background:#fff;border:2px solid transparent;border-radius:15px;padding:17px 18px;font-family:'DM Sans',sans-serif;font-size:17px;color:var(--ink);box-shadow:0 4px 14px rgba(0,0,0,.1);outline:none}
+  .field:focus{border-color:var(--accent)}
+  .linkbtn{display:block;width:100%;background:none;border:none;color:#9fb8b3;font-family:'DM Sans',sans-serif;font-size:14px;margin-top:14px;cursor:pointer;text-decoration:underline}
+
+  .center{text-align:center;color:#fff}
+  .spinner{width:64px;height:64px;border-radius:50%;border:5px solid rgba(255,255,255,.15);border-top-color:var(--accent);margin:0 auto 22px;animation:spin 1s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .loadtxt{font-family:'Sora',sans-serif;font-weight:600;font-size:19px;min-height:26px}
+  .loadbar{height:7px;width:100%;max-width:280px;margin:18px auto 0;background:rgba(255,255,255,.14);border-radius:6px;overflow:hidden}
+  .loadbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--gold));border-radius:6px;transition:width .3s linear}
+
+  .diag{background:var(--card);border-radius:20px;padding:22px 20px;box-shadow:var(--shadow);margin-bottom:18px}
+  .diag .tag{display:inline-block;background:rgba(224,83,61,.12);color:var(--red);font-family:'Sora',sans-serif;font-weight:700;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:5px 11px;border-radius:30px;margin-bottom:10px}
+  .diag h2{font-family:'Sora',sans-serif;font-weight:800;font-size:22px;line-height:1.15;margin-bottom:10px}
+  .diag p{color:#33505a;font-size:15.5px;line-height:1.55}
+  .wheelcard{text-align:center;color:#fff}
+  .wheelcard .gift{font-family:'Sora',sans-serif;font-weight:700;font-size:17px;margin-bottom:4px}
+  .wheelcard .giftsub{color:#9fb8b3;font-size:14px;margin-bottom:16px}
+  .wheelbox{position:relative;width:280px;max-width:84vw;aspect-ratio:1;margin:0 auto 8px}
+  .wheelbox svg{width:100%;height:100%;display:block;transform:rotate(0deg);transition:transform 4.6s cubic-bezier(.17,.67,.21,1)}
+  .pointer{position:absolute;top:-6px;left:50%;transform:translateX(-50%);z-index:5;width:0;height:0;border-left:15px solid transparent;border-right:15px solid transparent;border-top:26px solid var(--gold);filter:drop-shadow(0 3px 4px rgba(0,0,0,.4))}
+  .hub{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:54px;height:54px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;color:var(--accent-d);box-shadow:0 4px 12px rgba(0,0,0,.3);font-size:12px;z-index:4;cursor:pointer}
+  .win{font-family:'Sora',sans-serif;font-weight:800;font-size:24px;color:var(--gold);margin:14px 0 2px;opacity:0;transform:scale(.7);transition:.45s}
+  .win.show{opacity:1;transform:scale(1)}
+  .winsub{color:#cfe7e0;font-size:14px;opacity:0;transition:.4s .15s}
+  .winsub.show{opacity:1}
+
+  .offer .top{text-align:center;color:#fff;margin-bottom:16px}
+  .offer .top .pill{display:inline-block;background:var(--gold);color:#3a2b05;font-family:'Sora',sans-serif;font-weight:800;font-size:12px;letter-spacing:.06em;padding:6px 13px;border-radius:30px;margin-bottom:12px}
+  .offer .top h1{font-family:'Sora',sans-serif;font-weight:800;font-size:24px;line-height:1.18;letter-spacing:-.01em}
+  .offer .top h1 em{font-style:normal;color:var(--gold)}
+  .ocard{background:var(--card);border-radius:20px;padding:22px 20px;box-shadow:var(--shadow)}
+  .prod{font-family:'Sora',sans-serif;font-weight:700;font-size:18px;margin-bottom:6px}
+  .benefits{list-style:none;margin:14px 0 18px}
+  .benefits li{display:flex;gap:10px;align-items:flex-start;font-size:15px;padding:6px 0;color:#26414b}
+  .benefits li .ck{color:var(--accent);font-weight:800;flex-shrink:0}
+  .pricebox{background:#f6faf9;border:1px solid var(--line);border-radius:15px;padding:16px;text-align:center;margin-bottom:8px}
+  .anchor{color:var(--soft);text-decoration:line-through;font-size:16px}
+  .offbadge{display:inline-block;background:rgba(224,83,61,.12);color:var(--red);font-weight:700;font-size:13px;padding:3px 9px;border-radius:20px;margin-left:6px;font-family:'Sora',sans-serif}
+  .finalp{font-family:'Sora',sans-serif;font-weight:800;font-size:40px;color:var(--ink);line-height:1;margin:6px 0 2px}
+  .finalp small{font-size:18px;vertical-align:top;font-weight:700}
+  .save{color:var(--accent-d);font-weight:700;font-size:14px}
+  .save-detail{color:#33505a;font-size:13px;margin-top:4px}
+  .timer{display:flex;align-items:center;justify-content:center;gap:8px;color:var(--red);font-family:'Sora',sans-serif;font-weight:700;font-size:14px;margin:14px 0}
+  .timer .clk{background:rgba(224,83,61,.1);padding:5px 9px;border-radius:8px;letter-spacing:.04em}
+  .cta{display:block;width:100%;background:linear-gradient(180deg,var(--accent),var(--accent-d));color:#fff;border:none;border-radius:15px;padding:18px;font-family:'Sora',sans-serif;font-weight:800;font-size:17px;cursor:pointer;box-shadow:0 8px 24px rgba(17,184,134,.4);transition:transform .12s;text-decoration:none;text-align:center;animation:pulse 2.2s infinite}
+  .cta:active{transform:scale(.98)}
+  @keyframes pulse{0%,100%{box-shadow:0 8px 24px rgba(17,184,134,.4)}50%{box-shadow:0 8px 34px rgba(17,184,134,.65)}}
+  .ctsub{text-align:center;color:var(--soft);font-size:12.5px;margin-top:10px}
+  .guarantee{display:flex;gap:11px;align-items:center;background:#f6faf9;border-radius:13px;padding:13px 15px;margin-top:14px}
+  .guarantee .g{font-size:24px}
+  .guarantee div{font-size:13px;color:#33505a}
+  .guarantee b{font-family:'Sora',sans-serif}
+  .objection{background:rgba(244,183,64,.1);border:1px solid rgba(244,183,64,.4);border-radius:13px;padding:14px 16px;margin-top:14px;font-size:14px;color:#5a4a1a;line-height:1.5;display:none}
+  .objection b{font-family:'Sora',sans-serif}
+  .proof{margin-top:18px}
+  .proof h3{color:#cfe7e0;font-family:'Sora',sans-serif;font-size:13px;letter-spacing:.06em;text-transform:uppercase;text-align:center;margin-bottom:12px}
+  .tcard{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:13px;padding:13px 15px;margin-bottom:9px;color:#e6efee}
+  .tcard .stars{color:var(--gold);font-size:13px;letter-spacing:2px}
+  .tcard p{font-size:14px;margin:5px 0 6px;line-height:1.45}
+  .tcard .who{font-family:'Sora',sans-serif;font-weight:600;font-size:12.5px;color:#9fb8b3}
+  .btn-secondary{display:block;width:100%;background:var(--card);color:var(--accent-d);border:none;border-radius:15px;padding:17px;font-family:'Sora',sans-serif;font-weight:800;font-size:16px;cursor:pointer;box-shadow:var(--shadow);transition:transform .12s;margin-top:14px}
+  .btn-secondary:active{transform:scale(.98)}
+  .btn-secondary[disabled]{opacity:.4;cursor:default}
+  .footnote{text-align:center;color:#6f8a86;font-size:11px;margin-top:22px;line-height:1.4}
+
+  .toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,140%);background:rgba(255,255,255,.97);color:var(--ink);border-radius:12px;padding:11px 15px;font-size:13.5px;font-weight:500;box-shadow:0 8px 30px rgba(0,0,0,.28);display:flex;align-items:center;gap:9px;max-width:340px;width:calc(100% - 40px);z-index:60;transition:transform .5s cubic-bezier(.2,.8,.2,1);pointer-events:none;line-height:1.3}
+  .toast.show{transform:translate(-50%,0)}
+  .toast .em{font-size:18px;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TM4S7X3B"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+<div class="app">
+  <div class="progress"><div class="bar" id="bar"></div></div>
+  <div class="brand"><span class="d"></span> DIAGNÓSTICO FINANCEIRO</div>
+  <div class="stagewrap">
+
+    <!-- QUIZ -->
+    <section class="screen active" id="s-quiz">
+      <div id="hero" class="heroline">Descubra por que seu dinheiro some antes do fim do mês e o que fazer pra parar isso. Responda 6 perguntas rápidas:</div>
+      <div class="eyebrow" id="qcount">Pergunta 1 de 6</div>
+      <h1 class="q" id="qtext"></h1>
+      <div class="opts" id="qopts"></div>
+    </section>
+
+    <!-- NOME -->
+    <section class="screen" id="s-name">
+      <div class="eyebrow">Falta pouco</div>
+      <h1 class="q">Antes de revelar seu diagnóstico, como você gosta de ser chamado(a)?</h1>
+      <div class="sub">É só pra deixar seu resultado com a sua cara.</div>
+      <input class="field" id="nameInput" type="text" placeholder="Seu primeiro nome" autocomplete="given-name" />
+      <button class="cta" id="nameBtn" style="margin-top:14px">Ver meu diagnóstico</button>
+      <button class="linkbtn" id="nameSkip">Prefiro pular</button>
+    </section>
+
+    <!-- LOADING -->
+    <section class="screen" id="s-load">
+      <div class="center">
+        <div class="spinner"></div>
+        <div class="loadtxt" id="loadtxt">Analisando suas respostas...</div>
+        <div class="loadbar"><i id="loadi"></i></div>
+      </div>
+    </section>
+
+    <!-- DIAGNOSIS + WHEEL -->
+    <section class="screen" id="s-wheel">
+      <div class="diag">
+        <span class="tag">Seu diagnóstico</span>
+        <h2 id="diagTitle">.</h2>
+        <p id="diagText">.</p>
+      </div>
+      <div class="wheelcard">
+        <div class="gift">Você desbloqueou um giro premiado</div>
+        <div class="giftsub">Gire para revelar seu desconto exclusivo nesta página</div>
+        <div class="wheelbox">
+          <div class="pointer"></div>
+          <svg id="wheel" viewBox="0 0 200 200" aria-hidden="true"></svg>
+          <div class="hub" id="hub">GIRAR</div>
+        </div>
+        <div class="win" id="winTxt"></div>
+        <div class="winsub" id="winSub"></div>
+        <button class="btn-secondary" id="spinBtn" style="margin-top:18px">GIRAR A ROLETA</button>
+        <button class="cta" id="toOffer" style="display:none;margin-top:14px">QUERO APROVEITAR MEU DESCONTO</button>
+      </div>
+    </section>
+
+    <!-- OFFER -->
+    <section class="screen" id="s-offer">
+      <div class="offer">
+        <div class="top">
+          <span class="pill" id="offerPill">VOCÊ GARANTIU 64% OFF</span>
+          <h1 id="offerHead">A solução pro seu <em id="offerProblem">descontrole</em> está aqui</h1>
+        </div>
+        <div class="ocard">
+          <div class="prod">Planilha de Controle Financeiro</div>
+          <p style="color:var(--soft);font-size:14.5px">O sistema simples que organiza pra onde vai cada real. Feito pra você manter, não pra abandonar na segunda semana.</p>
+          <ul class="benefits">
+            <li><span class="ck">✓</span> Veja exatamente pra onde vai seu dinheiro, todo mês</li>
+            <li><span class="ck">✓</span> Calcula sozinha quanto você pode economizar</li>
+            <li><span class="ck">✓</span> Categorias, metas e alertas, sem fórmula complicada</li>
+            <li><span class="ck">✓</span> Funciona no celular, em poucos minutos por semana</li>
+          </ul>
+          <div class="pricebox">
+            <div><span class="anchor" id="anchorP">De R$ 47,00</span><span class="offbadge" id="offPct">64% OFF</span></div>
+            <div class="finalp" id="finalP"><small>R$</small> 17,00</div>
+            <div class="save" id="saveTxt">Você economiza R$ 30,00 hoje</div>
+            <div class="save-detail" id="saveDetail">Menos que um lanche — e já cobre o que você perde por mês sem controle</div>
+          </div>
+          <div class="timer">Seu desconto expira em <span class="clk" id="clock">15:00</span></div>
+          <a class="cta" id="begin_checkout" href="https://pay.hub.la/a4ljlLq1umBAa2OlTlcH">QUERO GARANTIR MEUS 64% OFF</a>
+          <div class="ctsub">Pagamento 100% seguro · Acesso imediato · Funciona no celular</div>
+          <div class="objection" id="objection">
+            <b>Já tentou planilha antes e desistiu?</b> Essa é diferente. Ela é simples de propósito. O objetivo não é você virar contador, é você bater o olho e saber onde está o seu dinheiro. Quem some é o seu vazamento, não o seu tempo.
+          </div>
+          <div class="guarantee">
+            <span class="g">🛡️</span>
+            <div><b>Garantia de 7 dias.</b> Se não fizer sentido pra você, devolvemos 100% do valor. O risco é todo nosso.</div>
+          </div>
+        </div>
+        <div class="proof">
+          <h3>Quem já organizou</h3>
+          <div class="tcard"><div class="stars">★★★★★</div><p>"Pela primeira vez eu sei pra onde vai meu salário. Em 2 semanas já sobrou dinheiro."</p><div class="who">Camila R., SP</div></div>
+          <div class="tcard"><div class="stars">★★★★★</div><p>"Eu sempre desisti das planilhas. Essa é tão simples que virou hábito."</p><div class="who">Rodrigo M., RJ</div></div>
+          <div class="tcard"><div class="stars">★★★★★</div><p>"Parei de viver no limite do mês. Valeu cada centavo."</p><div class="who">Patrícia L., MG</div></div>
+        </div>
+        <div class="footnote">Oferta exclusiva desta página. Ao sair, o desconto desbloqueado é perdido.</div>
+      </div>
+    </section>
+
+  </div>
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+/* ============================================================
+   SESSION & UTM — captura por visita, anexado a todos os eventos
+   ============================================================ */
+const SESSION_ID = (() => {
+  let sid = sessionStorage.getItem('qsid');
+  if (!sid) {
+    sid = (typeof crypto.randomUUID === 'function')
+      ? crypto.randomUUID()
+      : Math.random().toString(36).slice(2) + Date.now().toString(36);
+    sessionStorage.setItem('qsid', sid);
+  }
+  return sid;
+})();
+
+const UTM = (() => {
+  const p = new URLSearchParams(location.search);
+  return {
+    utm_source:   p.get('utm_source')   || '',
+    utm_medium:   p.get('utm_medium')   || '',
+    utm_campaign: p.get('utm_campaign') || '',
+  };
+})();
+
+/* ============================================================
+   CONFIGURACAO
+   ============================================================ */
+const CONFIG = {
+  descontoPct: 64,
+  precoAncora: 47.00,
+  precoFinal: 17.00,
+  checkoutUrl: 'https://pay.hub.la/a4ljlLq1umBAa2OlTlcH',
+  trackEndpoint: 'https://painel.planilhaspremium.com/api/track',
+  trackDebug: true,
+  notificacoes: true,
+  toasts: [
+    {em:'📊', t:'6 em cada 10 descobrem que não controlam nada'},
+    {em:'💰', t:'86% dizem se preocupar com o futuro financeiro'},
+    {em:'💸', t:'A maioria não sabe pra onde vai o próprio dinheiro'},
+    {em:'🔥', t:'Várias pessoas fizeram esse diagnóstico hoje'},
+  ],
+};
+
+/* ============================================================
+   PERGUNTAS
+   ============================================================ */
+const QUESTIONS = [
+  { key:'perfil', text:'Pra personalizar seu diagnóstico, qual é o seu perfil?',
+    options:[
+      {ic:'💼', label:'CLT'},
+      {ic:'🚀', label:'Empreendedor ou Autônomo'},
+      {ic:'👤', label:'Outro'},
+    ]},
+  { key:'pra_onde', text:'Você sabe exatamente pra onde vai o seu dinheiro todo mês?',
+    options:[
+      {ic:'💸', label:'Não faço ideia'},
+      {ic:'🤔', label:'Tenho uma noção, mas sem controle'},
+      {ic:'📝', label:'Controlo no papel'},
+      {ic:'✅', label:'Sim, uso um sistema'},
+    ]},
+  { key:'controle', text:'Como você controla suas finanças hoje?',
+    options:[
+      {ic:'❌', label:'Não controlo nada'},
+      {ic:'📓', label:'Papel ou caderno'},
+      {ic:'📊', label:'Planilha básica'},
+      {ic:'📱', label:'App pago'},
+    ]},
+  { key:'incomodo', text:'O que mais te incomoda hoje?',
+    options:[
+      {ic:'😨', label:'Some dinheiro e não sei pra onde foi'},
+      {ic:'😰', label:'Vivo no limite do orçamento'},
+      {ic:'😢', label:'Não consigo guardar nada'},
+      {ic:'😟', label:'Tenho medo do futuro'},
+    ]},
+  { key:'objetivo', text:'Qual seu principal objetivo agora?',
+    options:[
+      {ic:'🎯', label:'Parar de viver no limite'},
+      {ic:'🏦', label:'Montar reserva de emergência'},
+      {ic:'✈️', label:'Guardar pra um sonho'},
+      {ic:'📈', label:'Construir patrimônio'},
+    ]},
+  { key:'medo', text:'Se nada mudar, o que mais te assusta?',
+    options:[
+      {ic:'🔴', label:'Continuar no vermelho pra sempre'},
+      {ic:'😭', label:'Não realizar meus planos'},
+      {ic:'😨', label:'Uma emergência sem reserva'},
+      {ic:'🏦', label:'Trabalhar só pra pagar conta'},
+    ]},
+];
+
+const answers = {};
+let qi = 0;
+
+/* ============================================================
+   TRACKING — todos os eventos levam session_id + UTMs
+   ============================================================ */
+let funnelStarted = false;
+function track(event, data) {
+  const payload = Object.assign({
+    event: event,
+    ts: new Date().toISOString(),
+    quiz: 'planilha_v2',
+    ticket: CONFIG.precoFinal,
+    session_id: SESSION_ID,
+  }, UTM, data || {});
+
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push(payload);
+
+  if (typeof fbq === 'function') {
+    if (event === 'checkout_click') fbq('track', 'InitiateCheckout', {value: CONFIG.precoFinal, currency: 'BRL'});
+    else if (event === 'quiz_start') fbq('track', 'Lead');
+    else fbq('trackCustom', event, payload);
+  }
+
+  if (CONFIG.trackEndpoint) {
+    try { navigator.sendBeacon(CONFIG.trackEndpoint, JSON.stringify(payload)); } catch(e) {}
+  }
+
+  if (CONFIG.trackDebug) console.log('[track]', event, payload);
+}
+
+/* ============================================================
+   ABANDONO POR ETAPA — captura em qual step o usuário saiu
+   ============================================================ */
+let _stepStartTime = Date.now();
+let _currentStep = 'quiz_view';
+
+function setStep(step) {
+  _currentStep = step;
+  _stepStartTime = Date.now();
+}
+
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') {
+    track('quiz_abandon', {
+      step: _currentStep,
+      time_on_step_ms: Date.now() - _stepStartTime,
+    });
+  }
+});
+
+/* ============================================================
+   UTILITÁRIOS
+   ============================================================ */
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top: 0, behavior: 'instant'});
+}
+function setProgress(p) { document.getElementById('bar').style.width = p + '%'; }
+function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
+function firstName(v) {
+  v = (v || '').trim(); if (!v) return '';
+  const f = v.split(/\s+/)[0];
+  return f.charAt(0).toUpperCase() + f.slice(1).toLowerCase();
+}
+
+/* ============================================================
+   QUIZ
+   ============================================================ */
+function renderQ() {
+  const q = QUESTIONS[qi];
+  document.getElementById('hero').style.display = qi === 0 ? 'block' : 'none';
+  document.getElementById('qcount').textContent = `Pergunta ${qi + 1} de ${QUESTIONS.length}`;
+  document.getElementById('qtext').textContent = q.text;
+  setProgress(Math.round((qi) / QUESTIONS.length * 88) + 5);
+  setStep('quiz_question_' + (qi + 1));
+  const wrap = document.getElementById('qopts'); wrap.innerHTML = '';
+  q.options.forEach(opt => {
+    const b = document.createElement('button'); b.className = 'opt';
+    b.innerHTML = `<span class="ic">${opt.ic}</span><span>${opt.label}</span>`;
+    b.addEventListener('click', () => {
+      if (!funnelStarted) { funnelStarted = true; track('quiz_start'); }
+      answers[q.key] = opt.label;
+      track('quiz_question', {index: qi + 1, key: q.key, value: opt.label});
+      b.classList.add('sel');
+      setTimeout(nextQ, 230);
+    });
+    wrap.appendChild(b);
+  });
+}
+function nextQ() { qi++; if (qi < QUESTIONS.length) { renderQ(); } else { track('quiz_complete'); showName(); } }
+
+/* ============================================================
+   NOME
+   ============================================================ */
+function showName() {
+  stopToasts(); setProgress(94); show('s-name');
+  setStep('name');
+  setTimeout(() => document.getElementById('nameInput').focus(), 300);
+}
+
+/* ============================================================
+   LOADING
+   ============================================================ */
+function startLoading() {
+  setProgress(100); show('s-load');
+  setStep('loading');
+  const msgs = ['Analisando suas respostas...', 'Identificando seu padrão financeiro...', 'Montando seu diagnóstico...'];
+  let m = 0, prog = 0;
+  const lt = document.getElementById('loadtxt'), li = document.getElementById('loadi');
+  li.style.width = '0%';
+  const iv = setInterval(() => {
+    prog += 4; li.style.width = Math.min(prog, 100) + '%';
+    if (prog % 34 === 0 && m < msgs.length - 1) { m++; lt.textContent = msgs[m]; }
+    if (prog >= 100) { clearInterval(iv); setTimeout(buildDiagnosis, 350); }
+  }, 70);
+}
+
+/* ============================================================
+   DIAGNÓSTICO PERSONALIZADO
+   ============================================================ */
+function buildDiagnosis() {
+  const nome = answers['nome'] || '';
+  const c = answers['controle'];
+
+  let title = 'O Vazamento Invisível';
+  if (c === 'Papel ou caderno') title = 'Quase Lá, mas Sem Sistema';
+  else if (c === 'Planilha básica') title = 'O Organizador Iniciante';
+  else if (c === 'App pago') title = 'O Buscador de Controle';
+
+  const empatia = {
+    'Some dinheiro e não sei pra onde foi': 'no fim do mês você olha pra trás e não faz ideia de onde o dinheiro foi parar.',
+    'Vivo no limite do orçamento': 'todo mês vira a mesma corda bamba, com o dinheiro mal cobrindo as contas.',
+    'Não consigo guardar nada': 'por mais que você tente, nunca sobra nada pra guardar.',
+    'Tenho medo do futuro': 'lá no fundo bate aquele medo de não estar preparado pro que vem pela frente.',
+  }[answers['incomodo']] || 'você sente que o dinheiro nunca rende o que deveria.';
+
+  const mecanismo = {
+    'Não controlo nada': 'E faz todo sentido. Hoje você não usa nenhum sistema, então fica tudo na cabeça, e a cabeça sempre deixa escapar.',
+    'Papel ou caderno': 'O caderno até ajuda, mas ele não soma sozinho nem te mostra o quadro completo, então sempre foge alguma coisa.',
+    'Planilha básica': 'Você já tenta com uma planilha, só que ela dá trabalho demais e acaba largada na segunda semana.',
+    'App pago': 'Você até paga por um app, mas ele complica o que devia ser simples, e aí você para de usar.',
+  }[c] || 'Hoje falta um lugar único que te mostre tudo de forma simples.';
+
+  const esperanca = {
+    'Parar de viver no limite': 'pra você finalmente parar de viver no limite e respirar no fim do mês.',
+    'Montar reserva de emergência': 'pra você montar aquela reserva que tira o peso das costas.',
+    'Guardar pra um sonho': 'pra você começar a guardar de verdade pro que importa.',
+    'Construir patrimônio': 'pra você parar de só pagar conta e começar a construir patrimônio.',
+  }[answers['objetivo']] || 'pra você assumir o controle do seu dinheiro de vez.';
+
+  const abertura = nome ? `${nome}, ${empatia}` : cap(empatia);
+  const texto = `${abertura} ${mecanismo} A real? Isso nunca foi falta de esforço seu. Foi falta de um sistema simples, ${esperanca}`;
+
+  document.getElementById('diagTitle').textContent = title;
+  document.getElementById('diagText').textContent = texto;
+
+  const probMap = {
+    'Some dinheiro e não sei pra onde foi': 'dinheiro que some',
+    'Vivo no limite do orçamento': 'viver no limite',
+    'Não consigo guardar nada': 'não conseguir guardar',
+    'Tenho medo do futuro': 'medo do futuro',
+  };
+  const head = document.getElementById('offerHead');
+  if (nome) { head.innerHTML = `${nome}, a solução pro seu <em>${probMap[answers['incomodo']] || 'descontrole'}</em> está aqui`; }
+  else { head.innerHTML = `A solução pro seu <em>${probMap[answers['incomodo']] || 'descontrole'}</em> está aqui`; }
+
+  const medo = (answers['medo'] || '').toLowerCase(), inc = (answers['incomodo'] || '').toLowerCase();
+  if (medo.includes('vermelho') || inc.includes('medo') || answers['perfil'] === 'CLT' || c === 'Planilha básica' || c === 'App pago') {
+    document.getElementById('objection').style.display = 'block';
+  }
+
+  show('s-wheel'); setStep('wheel'); setProgress(100);
+  track('diagnosis_view', {profile: title, incomodo: answers['incomodo'], perfil: answers['perfil']});
+}
+
+/* ============================================================
+   ROLETA — sempre para no segmento vencedor
+   ============================================================ */
+const WHEEL = ['10% OFF', '50% OFF', '20% OFF', '64% OFF', '15% OFF', '40% OFF', '30% OFF', '70% OFF'];
+let WIN_INDEX = WHEEL.indexOf(CONFIG.descontoPct + '% OFF');
+if (WIN_INDEX < 0) { WHEEL[3] = CONFIG.descontoPct + '% OFF'; WIN_INDEX = 3; }
+const SEG = 360 / WHEEL.length;
+const COLORS = ['#0e2a36', '#11b886', '#0e2a36', '#f4b740', '#0e2a36', '#11b886', '#0e2a36', '#13405a'];
+
+function polar(cx, cy, r, ang) {
+  const a = (ang - 90) * Math.PI / 180;
+  return [cx + r * Math.cos(a), cy + r * Math.sin(a)];
+}
+function buildWheel() {
+  const cx = 100, cy = 100, r = 96; let s = '';
+  for (let i = 0; i < WHEEL.length; i++) {
+    const a0 = i * SEG, a1 = (i + 1) * SEG;
+    const [x0, y0] = polar(cx, cy, r, a0), [x1, y1] = polar(cx, cy, r, a1);
+    s += `<path d="M${cx} ${cy} L${x0.toFixed(2)} ${y0.toFixed(2)} A${r} ${r} 0 0 1 ${x1.toFixed(2)} ${y1.toFixed(2)} Z" fill="${COLORS[i % COLORS.length]}" stroke="rgba(255,255,255,.18)" stroke-width="1"/>`;
+    const mid = a0 + SEG / 2;
+    const [tx, ty] = polar(cx, cy, r * 0.62, mid);
+    const isWin = i === WIN_INDEX;
+    s += `<text x="${tx.toFixed(2)}" y="${ty.toFixed(2)}" fill="${isWin ? '#3a2b05' : '#fff'}" font-family="Sora,sans-serif" font-weight="${isWin ? 800 : 600}" font-size="${isWin ? '11' : '9'}" text-anchor="middle" dominant-baseline="middle" transform="rotate(${mid} ${tx.toFixed(2)} ${ty.toFixed(2)})">${WHEEL[i]}</text>`;
+  }
+  document.getElementById('wheel').innerHTML = s;
+}
+
+let spun = false;
+function spin() {
+  if (spun) return; spun = true;
+  track('wheel_spin', {desconto: CONFIG.descontoPct});
+  const sb = document.getElementById('spinBtn');
+  sb.setAttribute('disabled', ''); sb.textContent = 'Girando...';
+  const centerOfWin = WIN_INDEX * SEG + SEG / 2;
+  const jitter = (Math.random() * 2 - 1) * (SEG * 0.28);
+  const rotation = 360 * 6 - centerOfWin + jitter;
+  document.getElementById('wheel').style.transform = `rotate(${rotation}deg)`;
+  setTimeout(() => {
+    sb.style.display = 'none';
+    const wt = document.getElementById('winTxt'), ws = document.getElementById('winSub');
+    wt.textContent = `Você ganhou ${CONFIG.descontoPct}% OFF`; wt.classList.add('show');
+    ws.textContent = 'Desconto aplicado automaticamente na próxima tela.'; ws.classList.add('show');
+    document.getElementById('toOffer').style.display = 'block';
+  }, 4750);
+}
+
+/* ============================================================
+   OFERTA — preços e contador
+   ============================================================ */
+function money(v) { return 'R$ ' + v.toFixed(2).replace('.', ','); }
+function fillOffer() {
+  const econ = CONFIG.precoAncora - CONFIG.precoFinal;
+  document.getElementById('offerPill').textContent = `VOCÊ GARANTIU ${CONFIG.descontoPct}% OFF`;
+  document.getElementById('anchorP').textContent = 'De ' + money(CONFIG.precoAncora);
+  document.getElementById('offPct').textContent = CONFIG.descontoPct + '% OFF';
+  document.getElementById('finalP').innerHTML = '<small>R$</small> ' + CONFIG.precoFinal.toFixed(2).replace('.', ',');
+  document.getElementById('saveTxt').textContent = 'Você economiza ' + money(econ) + ' hoje';
+  document.getElementById('begin_checkout').textContent = `QUERO GARANTIR MEUS ${CONFIG.descontoPct}% OFF`;
+  document.getElementById('begin_checkout').href = CONFIG.checkoutUrl;
+  setStep('offer');
+}
+
+let timerStarted = false;
+function startTimer() {
+  if (timerStarted) return; timerStarted = true;
+  let t = 15 * 60; const el = document.getElementById('clock');
+  const iv = setInterval(() => {
+    t--; if (t < 0) { clearInterval(iv); el.textContent = '00:00'; return; }
+    el.textContent = `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(t % 60).padStart(2, '0')}`;
+  }, 1000);
+}
+
+/* ============================================================
+   NOTIFICAÇÕES (toasts)
+   ============================================================ */
+let toastTimer = null, toastIdx = 0;
+function showToast(o) {
+  const el = document.getElementById('toast');
+  el.innerHTML = `<span class="em">${o.em}</span><span>${o.t}</span>`;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 4200);
+}
+function startToasts() {
+  if (!CONFIG.notificacoes || !CONFIG.toasts.length) return;
+  function loop() {
+    showToast(CONFIG.toasts[toastIdx % CONFIG.toasts.length]); toastIdx++;
+    toastTimer = setTimeout(loop, 7000);
+  }
+  toastTimer = setTimeout(loop, 3500);
+}
+function stopToasts() {
+  if (toastTimer) clearTimeout(toastTimer);
+  document.getElementById('toast').classList.remove('show');
+}
+
+/* ============================================================
+   INICIALIZAÇÃO
+   ============================================================ */
+track('quiz_view');
+buildWheel();
+renderQ();
+startToasts();
+
+document.getElementById('hub').addEventListener('click', spin);
+document.getElementById('spinBtn').addEventListener('click', spin);
+document.getElementById('toOffer').addEventListener('click', () => {
+  fillOffer(); show('s-offer'); startTimer(); track('offer_view');
+});
+document.getElementById('nameBtn').addEventListener('click', () => {
+  answers['nome'] = firstName(document.getElementById('nameInput').value);
+  track('name_submitted', {has_name: !!answers['nome']});
+  startLoading();
+});
+document.getElementById('nameSkip').addEventListener('click', () => {
+  answers['nome'] = ''; track('name_skipped'); startLoading();
+});
+document.getElementById('nameInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    answers['nome'] = firstName(e.target.value);
+    track('name_submitted', {has_name: !!answers['nome']});
+    startLoading();
+  }
+});
+document.getElementById('begin_checkout').addEventListener('click', (e) => {
+  e.preventDefault();
+  track('checkout_click', {value: CONFIG.precoFinal});
+  // Aguarda um pouco para garantir que sendBeacon foi enviado antes de navegar
+  setTimeout(() => {
+    window.location.href = CONFIG.checkoutUrl;
+  }, 100);
+});
+</script>
+</body>
+</html>
