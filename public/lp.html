@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle Financeiro Simples - Planilha</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+
+        .red-banner { background: #d32f2f; color: white; padding: 15px; text-align: center; font-weight: bold; }
+
+        .hero { background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); color: white; padding: 60px 20px; text-align: center; }
+        .hero h1 { font-size: 2.5rem; margin-bottom: 20px; }
+        .hero p { font-size: 1.1rem; margin-bottom: 30px; max-width: 800px; margin-left: auto; margin-right: auto; }
+
+        .section { padding: 60px 20px; max-width: 1200px; margin: 0 auto; }
+        .section h2 { font-size: 2rem; text-align: center; margin-bottom: 40px; color: #1a472a; }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
+
+        .card { background: white; border-radius: 12px; padding: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; }
+        .card h3 { font-size: 1.5rem; margin-bottom: 15px; }
+        .card p { color: #666; margin-bottom: 20px; font-size: 0.95rem; }
+        .card .price { font-size: 2.5rem; font-weight: bold; color: #d32f2f; margin: 20px 0; }
+        .card button { background: #00d084; color: white; border: none; padding: 12px 30px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem; }
+        .card button:hover { background: #00b86b; }
+
+        .featured { background: #00d084; color: white; transform: scale(1.05); }
+        .featured .price { color: white; }
+        .featured button { background: white; color: #00d084; font-weight: bold; }
+
+        .footer { background: #f5f5f5; padding: 40px 20px; text-align: center; color: #666; }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.8rem; }
+            .section h2 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Red Banner -->
+    <div class="red-banner">
+        MUDE SEU FINANCEIRO EM 2026!
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1>CONTROLE FINANCEIRO SIMPLES</h1>
+        <p>Transforme sua vida financeira com uma planilha simples, automática e eficiente 💰</p>
+    </div>
+
+    <!-- Problems Section -->
+    <div class="section" style="background: #f9f9f9;">
+        <h2>Por que a maioria dos brasileiros sofre?</h2>
+        <div style="text-align: center; margin: 40px 0;">
+            <h3 style="color: #1a472a; margin: 20px 0;">A maioria dos Brasileiros contam moedas no fim do mês...</h3>
+            <p>Deixam até de fazer viagens nas férias...</p>
+        </div>
+        <h3 style="text-align: center; color: #1a472a; margin: 40px 0;">Todos esses problemas derivam da falta de <span style="color: #d32f2f;">organização financeira...</span></h3>
+    </div>
+
+    <!-- Solution Section -->
+    <div class="section">
+        <h2>E foi por isso que...</h2>
+        <div style="text-align: center; max-width: 800px; margin: 40px auto;">
+            <h3 style="color: #1a472a; margin: 20px 0;">Dr. Rafael Barbosa</h3>
+            <p>especialista em gestão financeira criou a</p>
+            <h3 style="color: #00d084; font-size: 1.3rem;">Planilha de Controle Financeiro Simples</h3>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="section" style="background: #f9f9f9;">
+        <h2>O que você recebe 🎁</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>📊 Painel Completo</h3>
+                <p>Veja seu dinheiro de forma clara e objetiva</p>
+            </div>
+            <div class="card">
+                <h3>🎥 Vídeos Tutoriais</h3>
+                <p>Aprenda a usar em minutos com vídeos passo a passo</p>
+            </div>
+            <div class="card">
+                <h3>💳 Painel de Cartões de Crédito</h3>
+                <p>Acompanhe todos os seus cartões em um só lugar</p>
+            </div>
+            <div class="card">
+                <h3>⚡ Lançamento em 3 Cliques</h3>
+                <p>Registre suas despesas rapidamente e sem complicação</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pricing Section -->
+    <div class="section">
+        <h2>Escolha a melhor versão para você 👇</h2>
+        <div class="grid" style="max-width: 900px; margin: 40px auto;">
+
+            <!-- Básica -->
+            <div class="card">
+                <h3>Planilha Básica</h3>
+                <p>Planilha básica sem cartões · 1 mês de controle</p>
+                <div class="price">R$ 5,90</div>
+                <p style="font-size: 0.9rem; color: #999;">Pagamento único</p>
+                <button>QUERO A BÁSICA</button>
+            </div>
+
+            <!-- Essencial (destaque) -->
+            <div class="card featured">
+                <h3>Planilha Essencial</h3>
+                <p>Todas as versões possuem acesso via e-mail, vídeos de como usar e começar a ter clareza financeira</p>
+                <div class="price">R$ 17,90</div>
+                <p style="font-size: 0.9rem;">Pagamento único</p>
+                <button>QUERO A ESSENCIAL</button>
+            </div>
+
+            <!-- Completa -->
+            <div class="card">
+                <h3>Planilha Completa</h3>
+                <p>Tudo incluído + consultoria pessoal e suporte prioritário</p>
+                <div class="price">R$ 27,90</div>
+                <p style="font-size: 0.9rem; color: #999;">Pagamento único</p>
+                <button>QUERO A COMPLETA</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="section" style="background: #f9f9f9;">
+        <h2>Dúvidas Frequentes</h2>
+        <div style="max-width: 700px; margin: 40px auto;">
+            <div style="margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #ddd;">
+                <h3 style="color: #1a472a; margin-bottom: 10px;">É realmente simples?</h3>
+                <p>Sim! Você consegue configurar tudo em menos de 5 minutos.</p>
+            </div>
+            <div style="margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #ddd;">
+                <h3 style="color: #1a472a; margin-bottom: 10px;">Funciona em celular?</h3>
+                <p>Perfeito! Funciona em qualquer dispositivo com acesso ao Google Planilhas.</p>
+            </div>
+            <div style="margin-bottom: 30px;">
+                <h3 style="color: #1a472a; margin-bottom: 10px;">Tem garantia?</h3>
+                <p>30 dias de garantia total. Se não gostar, devolvemos seu dinheiro.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>&copy; 2026 Controle Simples. Todos os direitos reservados.</p>
+    </div>
+
+</body>
+</html>
